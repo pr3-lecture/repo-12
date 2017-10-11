@@ -39,12 +39,12 @@ class AboutRegularExpressions < Neo::Koan
   #
   # We say that the repetition operators above are "greedy."
   #
-  # Why?
+  # Why? -  Because the pattern finds the longest possible appearance of the value
 
   # ------------------------------------------------------------------
 
   def test_the_left_most_match_wins
-    assert_equal __, "abbccc az"[/az*/]
+    assert_equal "a", "abbccc az"[/az*/]
   end
 
   # ------------------------------------------------------------------
