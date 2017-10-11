@@ -37,14 +37,14 @@ class AboutObjects < Neo::Koan
     assert_equal 201, 100.object_id
 
     # THINK ABOUT IT:
-    # What pattern do the object IDs for small integers follow?
+    # What pattern do the object IDs for small integers follow? *2+1
   end
 
   def test_clone_creates_a_different_object
     obj = Object.new
     copy = obj.clone
 
-    assert_equal __, obj           != copy
-    assert_equal __, obj.object_id != copy.object_id
+    assert_equal true, obj           != copy
+    assert_equal true, obj.object_id != copy.object_id
   end
 end
