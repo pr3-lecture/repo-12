@@ -20,6 +20,7 @@ def triangle(a, b, c)
   if(a == b || a == c || b == c)
     return :isosceles
   end
+
   return :scalene
 
 end
