@@ -14,6 +14,14 @@
 #   about_triangle_project_2.rb
 #
 def triangle(a, b, c)
+  if(a <= 0 || b <= 0 || c <= 0)
+    raise TriangleError, "Triangle Error"
+  end
+
+  if (((a+b)<=c) || ((b+c)<=a) || ((c+a)<=b))
+    raise TriangleError, "Triangle Error"
+  end
+
   if(a == b && a == c)
     return :equilateral
   end
@@ -22,6 +30,7 @@ def triangle(a, b, c)
   end
 
   return :scalene
+
 
 end
 
