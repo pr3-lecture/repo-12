@@ -56,18 +56,18 @@ class AboutIteration < Neo::Koan
   def test_collect_transforms_elements_of_an_array
     array = [1, 2, 3]
     new_array = array.collect { |item| item + 10 }
-    assert_equal __, new_array
+    assert_equal [11, 12, 13], new_array
 
     # NOTE: 'map' is another name for the 'collect' operation
     another_array = array.map { |item| item + 10 }
-    assert_equal [11,12,13], another_array
+    assert_equal [11, 12, 13], another_array
   end
 
   def test_select_selects_certain_items_from_an_array
     array = [1, 2, 3, 4, 5, 6]
 
     even_numbers = array.select { |item| (item % 2) == 0 }
-    assert_equal [2,4,6], even_numbers
+    assert_equal __, even_numbers
 
     # NOTE: 'find_all' is another name for the 'select' operation
     more_even_numbers = array.find_all { |item| (item % 2) == 0 }
