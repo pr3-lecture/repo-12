@@ -33,14 +33,14 @@ class AboutIteration < Neo::Koan
     array.each do |item|
       sum += item
     end
-    assert_equal __, sum
+    assert_equal 6, sum
   end
 
   def test_each_can_use_curly_brace_blocks_too
     array = [1, 2, 3]
     sum = 0
     array.each { |item| sum += item }
-    assert_equal 6, sum
+    assert_equal __, sum
   end
 
   def test_break_works_with_each_style_iterations
