@@ -63,12 +63,12 @@ class AboutBlocks < Neo::Koan
   def test_block_can_affect_variables_in_the_code_where_they_are_created
     value = :initial_value
     method_with_block { value = :modified_in_a_block }
-    assert_equal __, value
+    assert_equal :modified_in_a_block, value
   end
 
   def test_blocks_can_be_assigned_to_variables_and_called_explicitly
     add_one = lambda { |n| n + 1 }
-    assert_equal 11, add_one.call(10)
+    assert_equal __, add_one.call(10)
 
     # Alternative calling syntax
     assert_equal 11, add_one[10]
