@@ -40,7 +40,7 @@ class AboutIteration < Neo::Koan
     array = [1, 2, 3]
     sum = 0
     array.each { |item| sum += item }
-    assert_equal __, sum
+    assert_equal 6, sum
   end
 
   def test_break_works_with_each_style_iterations
@@ -50,7 +50,7 @@ class AboutIteration < Neo::Koan
       break if item > 3
       sum += item
     end
-    assert_equal 6, sum
+    assert_equal __, sum
   end
 
   def test_collect_transforms_elements_of_an_array
