@@ -31,7 +31,17 @@ require File.expand_path(File.dirname(__FILE__) + '/neo')
 
 def score(dice)
   # You need to write this method
-  score = 0
+  #score = 0
+
+  hash = dice.inject(Hash.new(0)) do |total, element|
+    total[element] += 1
+    total
+  end
+
+  score = (hash[1] / 3) * 1000
+  score += (hash[1] % 3) * 100
+  score += (hash[5] % 3) * 50
+  (2..6).each { |elem| score += (hash[elem] / 3) * elem * 100 }
 
   score
 end
