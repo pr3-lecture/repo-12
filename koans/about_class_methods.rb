@@ -19,11 +19,12 @@ class AboutClassMethods < Neo::Koan
 
   def test_objects_have_methods
     fido = Dog.new
-    assert fido.methods.size > _n_
+    assert fido.methods.size > 59
   end
 
   def test_classes_have_methods
-    assert Dog.methods.size > _n_
+    puts Dog.methods.size
+    assert Dog.methods.size > 105
   end
 
   def test_you_can_define_methods_on_individual_objects
