@@ -10,8 +10,8 @@ class DiceSet
   end
 
   def roll(nr)
-    @values = Array.new(5)
-    @values.map! {|value| rand(6) + 1}
+    @values = Array.new(nr)
+    @values.map! { |value| rand(6) + 1 }
   end
 end
 
@@ -57,6 +57,7 @@ class AboutDiceProject < Neo::Koan
     # If the rolls are random, then it is possible (although not
     # likely) that two consecutive rolls are equal.  What would be a
     # better way to test this?
+    #
   end
 
   def test_you_can_roll_different_numbers_of_dice
