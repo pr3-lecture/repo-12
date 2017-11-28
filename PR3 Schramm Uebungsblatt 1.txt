@@ -1,0 +1,160 @@
+﻿; PR3 Uebungsblatt 1
+; Bearbeitet von Max Granzow (1624770) und Felix Künnecke (1627143)
+
+; Aufgabe 1 (a): Elemente tauschen
+(defun rotiere (l) 
+	(cond
+		((not (listp l)) 'PARAM_NOT_A_LIST)	; Die Operation kann nur auf einer Liste ausgefuehrt werden
+		( (> (length l) 0) 
+			(append
+				(cdr l)
+				(list(car l))
+			)
+		)
+		(T l) ; Liste hat nur ein Element
+	)
+)
+
+
+; Aufgabe 1 (b): Element einfuegen
+(defun neues-vorletztes (neues l)
+	(cond
+		((not (listp l)) 'PARAM_NOT_A_LIST) ; Die Operation kann nur auf einer Liste ausgefuehrt werden
+		((> (length l) 0)
+			(append (ersteElemente l) (list neues) (last l)) ; Neues vorletztes Element einfuegen
+		)
+		(T (list neues)) ; Einfuegen in leere Liste
+	)
+)
+(defun ersteElemente (l) ; Gibt alle Elemente in einer Liste ausser dem letzten zurueck
+	(cond
+		((= (length l) 1) nil)
+		(T
+			(append (list (car l)) (ersteElemente (cdr l)))
+		)
+	)
+)
+
+
+; Aufgabe 1 (c): Laenge einer Liste berechnen
+(defun my-length (l)
+	(cond
+		((not (listp l)) 'PARAM_NOT_A_LIST)
+		((null l) 0) ; Abbruchbedingung: Leere Liste
+		(T
+			(+ 1 (my-length (cdr l)) ) ; Rekursiver Aufruf der Funktion mit kuerzerer Liste
+		)
+	)
+)
+
+
+; Aufgabe 1 (d): Laenge einer geschachtelten Liste berechnen
+(defun my-lengthR (l)
+	(cond
+		((not (listp l)) 'PARAM_NOT_A_LIST)
+		((null l) 0) ; Abbruchbedingung: Leere Liste
+		((and (listp (car l)))
+			(+
+				(my-lengthR (cdr l)) ; Weitere Elemente in Liste zaehlen
+				(my-lengthR (car l)) ; Rekursiv geschachtelte Listen durchsuchen
+			)
+		)
+		(T
+			(+ 1 (my-lengthR (cdr l)) )
+		)
+	)
+)
+
+
+; Aufgabe 1 (e): Liste umkehren
+(defun my-reverse (l)
+	(cond
+		((not (listp l)) 'PARAM_NOT_A_LIST)
+		((null l) nil)
+		(T
+			(append ; Je Rekursionsschritt ein weiteres Element umkehren
+				(my-reverse (cdr l))
+				(list (car l))
+			)
+		)
+	)
+	
+)
+
+
+; Aufgabe 1 (f): Geschachtelte Liste umkehren
+(defun my-reverseR (l)
+	(cond
+		((not (listp l)) 'PARAM_NOT_A_LIST)
+		((null l) nil)
+		(T
+			(append
+				(my-reverseR (cdr l)) ; Weitere Elemente der Liste umkehren
+				(cond
+					(
+						(listp (car l)) ; Element ist eine Liste
+						(list (my-reverseR (car l))) ; Re umkehren
+					)
+					(T
+						(list (car l)) ; Element ist keine Liste
+					)
+				)
+			)
+		)
+	)
+	
+)
+
+
+; Aufgabe 2 (a): Darstellung eines Binaerbaums
+	; Darstellung des Binaer-Baumes:
+	; Der Baum besteht aus einem Wurzelknoten. Jeder Knoten besteht aus einer Liste, die drei Elemente enthaelt. Das erste Element
+	; ist der gespeicherte Wert, das zweite und dritte Element jeweils ein weiterer Knoten. In Blatt-Knoten koennen die
+	; Angaben von rechtem und linkem Nachfolgeknoten entfallen.  Sollte ein Knoten nur ein Kind haben ist, erfolgt die Angabe des
+	; anderen Nachfolgers mit 'nil'.
+	; Beispiele: (a), (2 (1) (3)), (4 (2 (1) (3)) (6 (5) (7))), (a nil (b))
+
+
+; Aufgabe 2 (b): Baumtraversierung
+(defun inorder (tree)
+	(cond
+		((not (listp tree)) (print 'PARAM_NOT_A_TREE))
+		((null tree)) ; Kein Kind
+		((= 1 (length tree)) (print (car tree)))
+		((= 3 (length tree))
+			(inorder (car (cdr tree)))        ; Linke Nachfolger ausgeben
+			(print (car tree))                ; Element ausgeben
+			(inorder (car (cdr(cdr tree))))   ; Rechte Nachfolger ausgeben
+		)
+		(T (print 'PARAM_NOT_A_TREE))
+	)
+)
+
+(defun postorder (tree)
+	(cond
+		((not (listp tree)) (print 'PARAM_NOT_A_TREE))
+		((null tree)) ; Kein Kind
+		((= 1 (length tree)) (print (car tree)))
+		((= 3 (length tree))
+			(postorder (car (cdr tree)))       ; Linke Nachfolger ausgeben
+			(postorder (car (cdr(cdr tree))))  ; Rechte Nachfolger ausgeben
+			(print (car tree))                ;Element ausgeben
+		)
+		(T (print 'PARAM_NOT_A_TREE))
+	)
+)
+
+(defun preorder (tree)
+	(cond
+		((not (listp tree)) (print 'PARAM_NOT_A_TREE))
+		((null tree)) ; Kein Kind
+		((= 1 (length tree)) (print (car tree)))
+		((= 3 (length tree))
+			(print (car tree))                ;Element ausgeben
+			(preorder (car (cdr tree)))       ; Linke Nachfolger ausgeben
+			(preorder (car (cdr(cdr tree))))  ; Rechte Nachfolger ausgeben
+		)
+		(T (print 'PARAM_NOT_A_TREE))
+	)
+)
+
