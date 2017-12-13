@@ -1,0 +1,331 @@
+; PR3 Uebungsblatt 2
+; Bearbeitet von Max Granzow (1624770) und Felix Künnecke (1627143)
+
+; Darstellung des Binaer-Baumes:
+; Der Baum besteht aus einem Wurzelknoten. Jeder Knoten besteht aus einer Liste, die drei Elemente enthaelt. Das erste Element
+; ist der gespeicherte Wert, das zweite und dritte Element jeweils ein weiterer Knoten. In Blatt-Knoten sind die
+; Angaben der Nachfolgeknoten beide 'nil'.  Sollte ein Knoten nur ein Kind haben ist, erfolgt die Angabe des
+; anderen Nachfolgers mit 'nil'.
+; Beispiele: nil, (a nil nil), (2 (1 nil nil) (3 nil nil)), (4 (2 (1 nil nil) (3 nil nil)) (6 (5 nil nil) (7 nil nil))), (a nil (b nil nil))
+
+
+; insert tree val
+(defun insert (tree val)
+    (cond
+        ((null tree) (list val nil nil))
+        ((null val) tree)
+        ((= val (get-value tree)) tree)
+        ((< val (get-value tree))
+            (list
+                (get-value tree)
+                (insert (get-left-subtree tree) val)
+                (get-right-subtree tree)
+            )
+        )
+        ((> val (get-value tree))
+            (list
+                (get-value tree)
+                (get-left-subtree tree)
+                (insert (get-right-subtree tree) val)
+            )
+        )
+    )
+)
+
+; insert tree filename
+(defun insertFile (tree filename)
+    (with-open-file (in filename)
+        (let ((result tree))
+            (dotimes (i (- (/ (file-length in) 2) 1))
+                (setf result (insert result (read in)))
+            )
+            result
+        )
+    )
+)
+
+; contains tree val
+(defun contains(tree val)
+    (cond
+        ((not (listp tree)) 'PARAM_NOT_A_TREE)
+        ((not(numberp val)) 'PARAM_NOT_A_NUMBER)
+        ((null tree) NIL)
+        ((= (car tree) val) T)
+        ((> (car tree) val)
+            ;linken Teilbaum durchsuchen
+            (contains(get-left-subtree tree) val)
+        )
+        ((< (car tree) val)
+            ;rechten Teilbaum durchsuchen
+            (contains (get-right-subtree tree) val)
+        )
+    )
+)
+
+; size tree
+(defun size (tree)
+    (cond
+        ((not (listp tree)) 'PARAM_NOT_A_TREE)
+        ((null tree) 0)      
+        (T (+ 1
+            (size(get-left-subtree tree))
+            (size(get-right-subtree tree))
+        ))
+    )
+)
+
+; height tree
+(defun height (tree)
+    (if (null tree)
+        0
+        (+ 1
+            (max
+                (height (second tree))
+                (height (third tree))
+            )
+        )
+    )
+)
+
+; getMax tree
+(defun getMax(tree)
+    (cond
+        ((not (listp tree)) 'PARAM_NOT_A_TREE)
+        ((null tree) nil)
+        ((null (get-right-subtree tree)) (get-value tree))      
+        (T (getMax(get-right-subtree tree)) )
+    )
+)
+
+; getMin tree
+(defun getMin(tree)
+    (cond
+        ((not (listp tree)) 'PARAM_NOT_A_TREE)
+        ((null tree) nil)
+        ((null(get-left-subtree tree)) (car tree))      
+        (T (getMin(get-left-subtree tree)) )
+    )
+)
+
+; remove tree val
+(defun myRemove (tree val)
+    (cond
+        ((null val) tree)
+        ((null tree) nil)
+        ((= val (get-value tree))
+            (cond
+                ((null (get-right-subtree tree))
+                    (get-left-subtree tree)
+                )
+                ((null (get-left-subtree tree))
+                    (get-right-subtree tree)
+                )
+                (T
+                    (list
+                        (getMin (get-right-subtree tree))
+                        (get-left-subtree tree)
+                        (myRemove
+                            (get-right-subtree tree)
+                            (getMin (get-right-subtree tree))
+                        )
+                    )
+                )
+            )
+        )
+        ((< val (get-value tree))
+            (list
+                (get-value tree)
+                (myRemove (get-left-subtree tree) val)
+                (get-right-subtree tree)
+            )
+        )
+        ((> val (get-value tree))
+            (list
+                (get-value tree)
+                (get-left-subtree tree)
+                (myRemove (get-right-subtree tree) val)
+            )
+        )
+    )
+)
+
+; isEmpty tree
+(defun isEmpty(tree)
+    (null tree)
+)
+
+; addAll tree otherTree
+(defun addAll (tree otherTree)
+    (if (null otherTree)
+        tree
+        (addAll
+            (addAll
+                (insert tree (get-value otherTree))
+                (get-left-subtree otherTree)
+            )
+            (get-right-subtree otherTree)
+        )
+    )
+)
+
+; --------------------------------------------------------------------------
+; Baumtraversierung
+
+; printLevelorder tree
+(defun printLevelorder (tree)
+    (print (levelorder tree))
+)
+
+(defun levelorder (tree)
+    (labels
+        (
+            (levelorderR (tree level maxLevel) ; Durchlaeuft alle Levels und gibt die Elemente aus
+                (if (<= level maxLevel)
+                    (append
+                        (level tree level)
+                        (levelorderR tree (+ 1 level) maxLevel)
+                    )
+                )
+            )
+            
+            (level (tree level) ; Gibt alle Elemente eines Levels aus
+                (cond
+                    ((null tree) nil)
+                    ((= 1 level) (list (get-value tree)))
+                    (T
+                        (append
+                            (level (get-left-subtree tree) (- level 1))
+                            (level (get-right-subtree tree) (- level 1))
+                        )
+                    )
+                )
+            )
+        )
+        
+        (levelorderR tree 1 (height tree))
+    )
+)
+
+(defun printInorder (tree)
+    (print (inorder tree))
+)
+
+(defun inorder (tree)
+    (cond
+        ((null tree) nil) ; Kein Kind
+        ((= 1 (length tree)) (list (first tree)))
+        ((= 3 (length tree))
+            (append
+                (inorder (second tree))
+                (list (first tree))
+                (inorder (third tree))
+            )
+        )
+    )
+)
+
+(defun printPostorder (tree)
+    (print (postorder tree))
+)
+
+(defun postorder (tree)
+    (cond
+        ((null tree) nil) ; Kein Kind
+        ((= 1 (length tree)) (list (first tree)))
+        ((= 3 (length tree))
+            (append
+                (postorder (second tree))
+                (postorder (third tree))
+                (list (first tree))
+            )
+        )
+    )
+)
+
+(defun printPreorder (tree)
+    (print (preorder tree))
+)
+
+(defun preorder (tree)
+    (cond
+        ((null tree) nil) ; Kein Kind
+        ((= 1 (length tree)) (list (first tree)))
+        ((= 3 (length tree))
+            (append
+                (list (first tree))
+                (preorder (second tree))
+                (preorder (third tree))
+            )
+        )
+    )
+)
+
+
+; --------------------------------------------------------------------------
+; Hilfsmethoden:
+
+; linker Teilbaum
+(defun get-left-subtree(node)
+    (second node)
+)
+
+; rechter Teilbaum
+(defun get-right-subtree(node)
+    (third node)
+)
+
+; gespeicherter Wert
+(defun get-value (node)
+    (first node)
+)
+
+
+; --------------------------------------------------------------------------
+; Benutzerschnittstelle:
+
+(defun main ()
+    (format t "~%Funktion: ")
+	
+    (setq func (read))
+    (setq tree (read))
+	
+	(if (equal tree 'TREE) (setq tree saveTree))
+	
+	(setq choice (read))
+	(cond
+		(choice
+			(setq result (funcall func tree choice))
+		)
+		(T (setq result (funcall func tree)) )
+	)
+	
+	(if (and (listp result) (= 3 (length result)) (not (listp (first result))) (or (listp (second result)) (null (second result))))
+		(setq saveTree result)
+	)
+	
+	(format t "~%Result: ~a" result)
+	(format t "~%Result stored in: tree [~a]~%" saveTree)
+	
+    (main)
+)
+
+; Print possible commands
+(format t "~%Moegliche Eingaben:~%")
+(format t "~%- insert tree val")
+(format t "~%- insertFile tree filename")
+(format t "~%- contains tree val")
+(format t "~%- size tree nil")
+(format t "~%- height tree nil")
+(format t "~%- getMax tree nil")
+(format t "~%- getMin tree nil")
+(format t "~%- myRemove tree val")
+(format t "~%- isEmpty tree nil")
+(format t "~%- addAll tree otherTree")
+(format t "~%- printLevelorder tree nil")
+(format t "~%- printInorder tree nil")
+(format t "~%- printPreorder tree nil")
+(format t "~%- printPostorder tree nil~%")
+
+(setq tree nil)
+(setq saveTree nil)
+(main)
