@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "string.h"
 #include "crypto.h"
 
@@ -16,6 +17,8 @@ static char* encryptCorrect() {
 	int code = encrypt(key, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", result);
 	mu_assert("Encryption with correct parameters exits with error.", code == 0);
 	mu_assert("Encryption with correct parameters returns wrong result.", !strcmp(result, "URFVPJB[]ZN^XBJCEBVF@ZRKMJ"));
+	free(result);
+
 	return 0;
 }
 
@@ -28,6 +31,8 @@ static char* encryptKeyTooShort() {
 	int code = encrypt(key, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", result);
 	mu_assert("Encryption with empty key returns with wrong error code.", code == E_KEY_TOO_SHORT);
 	mu_assert("Encryption with empty key returns wrong result.", !strcmp(result, "ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
+	free(result);
+
 	return 0;
 }
 
@@ -40,6 +45,8 @@ static char* encryptIllegalKeyChar() {
 	int code = encrypt(key, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", result);
 	mu_assert("Encryption with illegal key returns with wrong error code.", code == E_KEY_ILLEGAL_CHAR);
 	mu_assert("Encryption with illegal key returns wrong result.", !strcmp(result, "ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
+	free(result);
+
 	return 0;
 }
 
@@ -52,6 +59,8 @@ static char* encryptIllegalMessageChar() {
 	int code = encrypt(key, "ABCDEFGHIJKLMNOPQ3RSTUVWXYZ", result);
 	mu_assert("Encryption with illegal message returns with wrong error code.", code == E_MESSAGE_ILLEGAL_CHAR);
 	mu_assert("Encryption with illegal message returns wrong result.", !strcmp(result, "ABCDEFGHIJKLMNOPQ3RSTUVWXYZ"));
+	free(result);
+
 	return 0;
 }
 
@@ -64,6 +73,8 @@ static char* decryptCorrect() {
 	int code = decrypt(key, "URFVPJB[]ZN^XBJCEBVF@ZRKMJ", result);
 	mu_assert("Decryption with correct parameters exits with error.", code == 0);
 	mu_assert("Decryption with correct parameters returns wrong result.", !strcmp(result, "ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
+	free(result);
+
 	return 0;
 }
 
@@ -76,6 +87,8 @@ static char* decryptKeyTooShort() {
 	int code = decrypt(key, "URFVPJB[]ZN^XBJCEBVF@ZRKMJ", result);
 	mu_assert("Decryption with empty key returns with wrong error code.", code == E_KEY_TOO_SHORT);
 	mu_assert("Decryption with empty key returns wrong result.", !strcmp(result, "URFVPJB[]ZN^XBJCEBVF@ZRKMJ"));
+	free(result);
+
 	return 0;
 }
 
@@ -88,6 +101,8 @@ static char* decryptIllegalKeyChar() {
 	int code = decrypt(key, "URFVPJB[]ZN^XBJCEBVF@ZRKMJ", result);
 	mu_assert("Decryption with illegal key returns with wrong error code.", code == E_KEY_ILLEGAL_CHAR);
 	mu_assert("Decryption with illegal key returns wrong result.", !strcmp(result, "URFVPJB[]ZN^XBJCEBVF@ZRKMJ"));
+	free(result);
+
 	return 0;
 }
 
@@ -100,6 +115,8 @@ static char* decryptIllegalCypherChar() {
 	int code = decrypt(key, "3URFVPJB[]ZN^XBJCEBVF@ZRKMJ", result);
 	mu_assert("Decryption with illegal cypher returns with wrong error code.", code == E_CYPHER_ILLEGAL_CHAR);
 	mu_assert("Decryption with illegal cypher returns wrong result.", !strcmp(result, "3URFVPJB[]ZN^XBJCEBVF@ZRKMJ"));
+	free(result);
+
 	return 0;
 }
 

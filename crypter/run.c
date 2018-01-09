@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "crypto.h"
 
 #define OK 0
@@ -66,6 +67,7 @@ int main(int argc, char** argv) {
 		char* result = strdup(line);
 		code = (*func)(key, line, result);
 		handleResult(code, result);
+		free(result);
 
 		if (file == stdin && strchr(line, '\n')) break;
 	}
